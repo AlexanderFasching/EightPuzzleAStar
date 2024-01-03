@@ -4,32 +4,28 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 public class EightPuzzle {
-
     private int[][] board;
-    private int nodesVisited;
-
+    private int nodesVisited; //for testing purposed
     private PriorityQueue<Node> priorityQueue;
-    private Set<EightPuzzle> visitedStates;
+    private Set<EightPuzzle> visitedStates; //for tracking already visited states
 
     public int[][] getBoard() {
         return board;
     }
-
+//constructor:
     public EightPuzzle(int[][] initialBoard) {
-
-        // Assuming the input is a 3x3 array
+        // Input has to be a 3x3 array
         if (initialBoard.length != 3 || initialBoard[0].length != 3) {
             throw new IllegalArgumentException("Invalid board size");
         }
-
-        // Copy the elements of the initial board
+        // Initialize the board
         board = new int[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 board[i][j] = initialBoard[i][j];
             }
         }
-        nodesVisited = 0;
+        nodesVisited = 0; //for testing purposes
     }
 
     public void printBoard() {
@@ -41,7 +37,7 @@ public class EightPuzzle {
         }
     }
 
-    // Find the position of the empty tile (0)
+    // Find the position of the empty tile (in our case this is 0)
     private int[] findEmptyTile() {
         int[] position = new int[2];
         for (int i = 0; i < 3; i++) {
@@ -53,7 +49,7 @@ public class EightPuzzle {
                 }
             }
         }
-        return null; // Should not happen in a valid puzzle
+        return null; // Should not happen in a valid puzzle!
     }
 
     // Find the position of a tile on the board
@@ -70,6 +66,10 @@ public class EightPuzzle {
         }
         return null; // Should not happen in a valid puzzle
     }
+
+    //Calculate the Manhatten Distance to estimate how far each tile is from its goal position
+    //Manhattan Distance = ∣x1−x2| + |y1-y2|
+
     private int manhattanDistance(int[] pos1, int[] pos2) {
         return Math.abs(pos1[0] - pos2[0]) + Math.abs(pos1[1] - pos2[1]);
     }
@@ -142,6 +142,7 @@ public class EightPuzzle {
         }
     }
 
+    //to check if the goal state is reached
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -150,6 +151,7 @@ public class EightPuzzle {
         return Arrays.deepEquals(board, that.board);
     }
 
+    //State of board produces same hash code
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(board);
@@ -171,10 +173,11 @@ public class EightPuzzle {
                 return;
             }
 
-            if (!visitedStates.contains(currentPuzzle)) {
+            if (!visitedStates.contains(currentPuzzle)) { //to avoid loops
 
                 visitedStates.add(currentPuzzle);
                 nodesVisited++;
+
                 // Generate and enqueue neighboring states
                 for (int i = 0; i < 4; i++) {
                     EightPuzzle neighbor = new EightPuzzle(currentPuzzle.board);
@@ -203,9 +206,9 @@ public class EightPuzzle {
                 }
             }
         }
-
         System.out.println("No solution found.");
     }
+
     public int getNodesVisited() {
         return nodesVisited;
     }
@@ -214,7 +217,7 @@ public class EightPuzzle {
         nodesVisited = 0;
     }
 
-    // Check if the puzzle is in the goal state
+    //Check if the puzzle is in the goal state
     public boolean isSolved() {
         int[][] goalState = {
                 {1, 2, 3},
@@ -222,68 +225,5 @@ public class EightPuzzle {
                 {7, 8, 0}
         };
         return Arrays.deepEquals(board, goalState);
-    }
-
-    public static void main(String[] args) {
-        // Example initial state
-        int[][] initialState = {
-                {1, 2, 4},
-                {6, 0, 8},
-                {5, 7, 3}
-        };
-
-        EightPuzzle puzzle = new EightPuzzle(initialState);
-        puzzle.printBoard();
-
-        int heuristic = puzzle.calculateManhattanHeuristic();
-        System.out.println("Manhattan Heuristic: " + heuristic);
-
-       /* puzzle.moveUp();
-        System.out.println("After moving down:");
-        puzzle.printBoard();
-
-        puzzle.moveToRight();
-        System.out.println("After moving down:");
-        puzzle.printBoard();
-
-        puzzle.moveToRight();
-        System.out.println("After moving down:");
-        puzzle.printBoard();
-
-        puzzle.moveDown();
-        System.out.println("After moving down:");
-        puzzle.printBoard();
-
-
-        heuristic = puzzle.calculateManhattanHeuristic();
-        System.out.println("Manhattan Heuristic: " + heuristic);
-
-        puzzle.moveUp();
-        System.out.println("After moving up:");
-        puzzle.printBoard();
-
-        heuristic = puzzle.calculateManhattanHeuristic();
-        System.out.println("Manhattan Heuristic: " + heuristic);
-
-        puzzle.moveToRight();
-        System.out.println("After moving right:");
-        puzzle.printBoard();
-
-        heuristic = puzzle.calculateManhattanHeuristic();
-        System.out.println("Manhattan Heuristic: " + heuristic);
-
-        puzzle.moveToLeft();
-        System.out.println("After moving left:");
-        puzzle.printBoard();
-
-        heuristic = puzzle.calculateManhattanHeuristic();
-        System.out.println("Manhattan Heuristic: " + heuristic);
-
-
-        EightPuzzle puzzly = new EightPuzzle(initialState);
-        puzzly.printBoard();*/
-
-       puzzle.solvePuzzle();
-
     }
 }

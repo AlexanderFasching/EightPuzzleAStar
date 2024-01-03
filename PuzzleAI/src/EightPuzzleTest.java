@@ -1,6 +1,5 @@
 import java.util.Random;
 public class EightPuzzleTest {
-
     public static void main(String[] args) {
         long totalNodesVisited = 0;
         long totalRuntime = 0;
@@ -26,14 +25,15 @@ public class EightPuzzleTest {
 
         System.out.println("Average nodes visited: " + (totalNodesVisited / 100.0));
         System.out.println("Average runtime: " + (totalRuntime / 100.0) + " ms");
-        System.out.println("Average memory used: " + (totalMemoryUsed / 100.0) / (1024.0 * 1024.0) + " MB");
+        System.out.println("Average memory used: " + (totalMemoryUsed / 100.0) / (1024.0) + " KB");
     }
 
+    //Generate a random State that is actually SOLVABLE:
     private static int[][] generateRandomState() {
         Random rand = new Random();
         EightPuzzle puzzle = new EightPuzzle(new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 0}});
 
-        int moveCount = 30; // Number of random moves to make
+        int moveCount = 30; //Number of random moves to make from the goal position
 
         for (int i = 0; i < moveCount; i++) {
             switch (rand.nextInt(4)) {
