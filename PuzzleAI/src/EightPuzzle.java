@@ -6,11 +6,17 @@ import java.util.Set;
 public class EightPuzzle {
 
     private int[][] board;
+    private int nodesVisited;
 
     private PriorityQueue<Node> priorityQueue;
     private Set<EightPuzzle> visitedStates;
 
+    public int[][] getBoard() {
+        return board;
+    }
+
     public EightPuzzle(int[][] initialBoard) {
+
         // Assuming the input is a 3x3 array
         if (initialBoard.length != 3 || initialBoard[0].length != 3) {
             throw new IllegalArgumentException("Invalid board size");
@@ -23,6 +29,7 @@ public class EightPuzzle {
                 board[i][j] = initialBoard[i][j];
             }
         }
+        nodesVisited = 0;
     }
 
     public void printBoard() {
@@ -167,6 +174,7 @@ public class EightPuzzle {
             if (!visitedStates.contains(currentPuzzle)) {
 
                 visitedStates.add(currentPuzzle);
+                nodesVisited++;
                 // Generate and enqueue neighboring states
                 for (int i = 0; i < 4; i++) {
                     EightPuzzle neighbor = new EightPuzzle(currentPuzzle.board);
@@ -197,6 +205,13 @@ public class EightPuzzle {
         }
 
         System.out.println("No solution found.");
+    }
+    public int getNodesVisited() {
+        return nodesVisited;
+    }
+
+    public void resetNodesVisited() {
+        nodesVisited = 0;
     }
 
     // Check if the puzzle is in the goal state
