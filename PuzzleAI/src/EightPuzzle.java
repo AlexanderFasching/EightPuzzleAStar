@@ -8,12 +8,14 @@ public class EightPuzzle {
     private int nodesVisited; //for testing purposed
     private PriorityQueue<Node> priorityQueue;
     private Set<EightPuzzle> visitedStates; //for tracking already visited states
+    private Heuristic heuristic;
 
     public int[][] getBoard() {
         return board;
     }
 //constructor:
-    public EightPuzzle(int[][] initialBoard) {
+    public EightPuzzle(int[][] initialBoard, Heuristic heuristic) {
+        this.heuristic = heuristic;
         // Input has to be a 3x3 array
         if (initialBoard.length != 3 || initialBoard[0].length != 3) {
             throw new IllegalArgumentException("Invalid board size");
@@ -85,6 +87,18 @@ public class EightPuzzle {
         return heuristic;
     }
 
+    // Calculate the Hamming Distance
+    public int calculateHammingDistance() {
+        int[][] goal = {{1, 2, 3},{4, 5, 6},{7, 8, 0}};
+        int heuristic = 0;
+        for(int tile = 1; tile <= 8; tile++) {
+            int[] currentPos = findTile(tile);
+            if(goal[currentPos[0]][currentPos[1]] != tile) {
+                heuristic++;
+            }
+        }
+        return heuristic;
+    }
 
     // Move the empty tile up
     public void moveUp() {
@@ -161,15 +175,15 @@ public class EightPuzzle {
     public void solvePuzzle() {
         priorityQueue = new PriorityQueue<>();
         visitedStates = new HashSet<>();
-        priorityQueue.add(new Node(calculateManhattanHeuristic(), this)); // Initial state
+        priorityQueue.add(new Node(heuristic == Heuristic.MANHATTAN ? calculateManhattanHeuristic() : calculateHammingDistance(), this)); // Initial state
 
         while (!priorityQueue.isEmpty()) {
             Node currentNode = priorityQueue.poll();
             EightPuzzle currentPuzzle = currentNode.puzzle;
 
             if (currentPuzzle.isSolved()) {
-                currentPuzzle.printBoard();
-                System.out.println("Puzzle Solved!");
+                //currentPuzzle.printBoard();
+                //System.out.println("Puzzle Solved!");
                 return;
             }
 
@@ -180,7 +194,7 @@ public class EightPuzzle {
 
                 // Generate and enqueue neighboring states
                 for (int i = 0; i < 4; i++) {
-                    EightPuzzle neighbor = new EightPuzzle(currentPuzzle.board);
+                    EightPuzzle neighbor = new EightPuzzle(currentPuzzle.board, heuristic);
                     switch (i) {
                         case 0:
                             neighbor.moveUp();
@@ -197,10 +211,18 @@ public class EightPuzzle {
                     }
 
                     if (!currentPuzzle.equals(neighbor)) {
-                        int totalCost = neighbor.calculateManhattanHeuristic(); // Assuming uniform path cost
-                        neighbor.printBoard();
-                        System.out.println("Total Cost: " + totalCost);
-                        System.out.println();
+                        int totalCost = -1111;
+                        switch (heuristic) {
+                            case MANHATTAN:
+                                totalCost = neighbor.calculateManhattanHeuristic();
+                                break;
+                            case HAMMING:
+                                totalCost = neighbor.calculateHammingDistance();
+                        }
+                        //totalCost = neighbor.calculateManhattanHeuristic(); // Assuming uniform path cost
+                        //neighbor.printBoard();
+                        //System.out.println("Total Cost: " + totalCost);
+                        //System.out.println();
                         priorityQueue.add(new Node(totalCost, neighbor));
                     }
                 }
